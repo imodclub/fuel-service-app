@@ -4,7 +4,7 @@ import { Typography } from '@mui/material';
 export default function UserDashboard() {
   return (
     <Layout>
-      <Typography variant="h4">User Dashboard</Typography>
+      <Typography variant="h4">Dashboard</Typography>
       {/* เพิ่มเนื้อหา dashboard ตามต้องการ */}
     </Layout>
   );

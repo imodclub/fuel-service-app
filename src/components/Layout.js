@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Box, Drawer, List, ListItem, ListItemText, Button } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import BottomSidebar from './BottomSidebar';
 
 const drawerWidth = 240;
 
@@ -10,27 +11,19 @@ export default function Layout({ children }) {
   const router = useRouter();
 
   useEffect(() => {
-    // ตรวจสอบ userId ใน Local Storage เมื่อ component ถูกโหลด
     const storedUserId = localStorage.getItem('userId');
     setUserId(storedUserId);
   }, []);
 
   const handleLogout = async () => {
-    // ลบ userId จาก Local Storage
     localStorage.removeItem('userId');
     setUserId(null);
-
-    // ลบ cookie
     document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-
-    // เรียก API เพื่อทำลาย session ที่ server (ถ้ามี)
     try {
       await fetch('/api/logout', { method: 'POST' });
     } catch (error) {
       console.error('Logout error:', error);
     }
-
-    // นำทางกลับไปยังหน้าหลัก
     router.push('/');
   };
 
@@ -50,7 +43,6 @@ export default function Layout({ children }) {
       >
         <List>
           {!userId ? (
-            // แสดงเมื่อไม่มี userId
             <>
               <ListItem button component={Link} href="/login">
                 <ListItemText primary="เข้าสู่ระบบ" />
@@ -60,10 +52,9 @@ export default function Layout({ children }) {
               </ListItem>
             </>
           ) : (
-            // แสดงเมื่อมี userId
             <>
-              <ListItem button component={Link} href="/dashboard">
-                <ListItemText primary="User Dashboard" />
+              <ListItem button component={Link} href="/userdashboard">
+                <ListItemText primary="Dashboard" />
               </ListItem>
               <ListItem>
                 <Button onClick={handleLogout} color="secondary">ออกจากระบบ</Button>
@@ -75,6 +66,20 @@ export default function Layout({ children }) {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         {children}
       </Box>
+      <Drawer
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+          },
+        }}
+        variant="permanent"
+        anchor="right"
+      >
+        <BottomSidebar />
+      </Drawer>
     </Box>
   );
 }

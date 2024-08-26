@@ -1,20 +1,28 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
-import { TextField, Button, Typography, Box, Dialog, DialogTitle, DialogContent, DialogActions, Alert } from '@mui/material';
+import { TextField, Button, Typography, Box, Alert } from '@mui/material';
 
 export default function CreateAccount() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [openDialog, setOpenDialog] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
 
+    // ตรวจสอบค่าว่างและช่องว่างในชื่อผู้ใช้
+    if (!username || !password || username.trim() !== username) {
+      setError('ชื่อผู้ใช้และรหัสผ่านต้องไม่เป็นค่าว่าง และชื่อผู้ใช้ต้องไม่มีช่องว่าง');
+      return;
+    }
+
+    // ตรวจสอบรหัสผ่านตรงกัน
     if (password !== confirmPassword) {
       setError('รหัสผ่านไม่ตรงกัน');
       return;
@@ -26,11 +34,15 @@ export default function CreateAccount() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password }),
       });
+
+      const data = await response.json();
+
       if (response.ok) {
-        setOpenDialog(true);
+        setSuccess(data.message);
+        // รอสักครู่แล้วนำทางไปหน้า login
+        setTimeout(() => router.push('/login'), 2000);
       } else {
-        const data = await response.json();
-        setError(data.message || 'เกิดข้อผิดพลาดในการสร้างบัญชี');
+        setError(data.message);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -38,12 +50,14 @@ export default function CreateAccount() {
     }
   };
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setUsername('');
-    setPassword('');
-    setConfirmPassword('');
-    router.push('/login');
+  const handleUsernameChange = (e) => {
+    const value = e.target.value;
+    setUsername(value);
+    if (value.includes(' ')) {
+      setError('ชื่อผู้ใช้ต้องไม่มีช่องว่าง');
+    } else {
+      setError('');
+    }
   };
 
   return (
@@ -53,14 +67,17 @@ export default function CreateAccount() {
           สร้างบัญชี
         </Typography>
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
         <form onSubmit={handleSubmit}>
           <TextField
             label="ชื่อผู้ใช้"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={handleUsernameChange}
             fullWidth
             margin="normal"
             required
+            error={!!error && error.includes('ชื่อผู้ใช้')}
+            helperText={error && error.includes('ชื่อผู้ใช้') ? error : ''}
           />
           <TextField
             label="รหัสผ่าน"
@@ -85,18 +102,6 @@ export default function CreateAccount() {
           </Button>
         </form>
       </Box>
-
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>ลงทะเบียนสำเร็จ</DialogTitle>
-        <DialogContent>
-          <Typography>บัญชีของคุณถูกสร้างเรียบร้อยแล้ว</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDialog} color="primary" autoFocus>
-            ตกลง
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Layout>
   );
 }
