@@ -6,6 +6,19 @@ import BottomSidebar from './BottomSidebar';
 
 const drawerWidth = 240;
 
+const bottomDrawerStyle = {
+  width: drawerWidth,
+  flexShrink: 0,
+  '& .MuiDrawer-paper': {
+    width: drawerWidth,
+    boxSizing: 'border-box',
+    height: 'auto',
+    bottom: 0,
+    top: 'auto',
+  },
+};
+
+
 export default function Layout({ children }) {
   const [userId, setUserId] = useState(null);
   const router = useRouter();
@@ -67,16 +80,9 @@ export default function Layout({ children }) {
         {children}
       </Box>
       <Drawer
-        sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          '& .MuiDrawer-paper': {
-            width: drawerWidth,
-            boxSizing: 'border-box',
-          },
-        }}
+        sx={bottomDrawerStyle}
         variant="permanent"
-        anchor="right"
+        anchor="bottom"
       >
         <BottomSidebar />
       </Drawer>
