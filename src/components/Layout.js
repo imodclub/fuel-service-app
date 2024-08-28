@@ -3,6 +3,7 @@ import { Box, Drawer, List, ListItem, ListItemText, Button } from '@mui/material
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import BottomSidebar from './BottomSidebar';
+import AddVehicleForm from './AddVehicleForm';
 
 const drawerWidth = 240;
 
@@ -21,6 +22,7 @@ const bottomDrawerStyle = {
 
 export default function Layout({ children }) {
   const [userId, setUserId] = useState(null);
+  const [openAddVehicle, setOpenAddVehicle] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -70,8 +72,14 @@ export default function Layout({ children }) {
                 <ListItemText primary="Dashboard" />
               </ListItem>
               <ListItem>
-                <Button onClick={handleLogout} color="secondary">ออกจากระบบ</Button>
+                <Button onClick={handleLogout} color="secondary">
+                  ออกจากระบบ
+                </Button>
               </ListItem>
+              <Button onClick={() => setOpenAddVehicle(true)}>
+                เพิ่มข้อมูลรถ
+              </Button>
+              <Button onClick={handleLogout}>ออกจากระบบ</Button>
             </>
           )}
         </List>
@@ -79,11 +87,16 @@ export default function Layout({ children }) {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         {children}
       </Box>
-      <Drawer
-        sx={bottomDrawerStyle}
-        variant="permanent"
-        anchor="bottom"
-      >
+      <AddVehicleForm
+        open={openAddVehicle}
+        onClose={() => setOpenAddVehicle(false)}
+        userId={userId}
+        onVehicleSaved={(newVehicle) => {
+          onAddVehicle(newVehicle);
+          setOpenAddVehicle(false);
+        }}
+      />
+      <Drawer sx={bottomDrawerStyle} variant="permanent" anchor="bottom">
         <BottomSidebar />
       </Drawer>
     </Box>

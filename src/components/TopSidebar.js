@@ -6,7 +6,7 @@ const menuItems = [
   { text: 'หน้าหลัก', icon: <Home />, href: '/' },
   { text: 'สร้างบัญชี', icon: <PersonAdd />, href: '/create-account' },
   { text: 'เข้าสู่ระบบ', icon: <Login />, href: '/login' },
-  { text: 'แดชบอร์ด', icon: <Dashboard />, href: '/dashboard' },
+  { text: 'แดชบอร์ด', icon: <Dashboard />, href: '/userdashboard' },
 ];
 
 export default function TopSidebar() {

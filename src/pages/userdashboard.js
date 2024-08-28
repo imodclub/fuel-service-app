@@ -1,28 +1,48 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
-import { Typography, Box } from '@mui/material';
+import { Typography, Grid, Box, useMediaQuery, useTheme } from '@mui/material';
+import VehicleCard from '../components/VehicleCard';
 
-export default function Dashboard() {
-  const [userId, setUserId] = useState(null);
+export default function UserDashboard() {
+  const [vehicles, setVehicles] = useState([]);
+  const theme = useTheme();
+  const isExtraSmall = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSmall = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const isMedium = useMediaQuery(theme.breakpoints.between('md', 'lg'));
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem('userId');
-    if (storedUserId) {
-      setUserId(storedUserId);
-    }
+    fetchVehicles();
   }, []);
+
+  const fetchVehicles = async () => {
+    try {
+      const userId = localStorage.getItem('userId');
+      const response = await fetch(`/api/vehicles?userId=${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setVehicles(data);
+      }
+    } catch (error) {
+      console.error('Error fetching vehicles:', error);
+    }
+  };
+  
+const matches = useMediaQuery('(min-width:600px)');
+  
 
   return (
     <Layout>
-      <Box sx={{ maxWidth: 600, margin: 'auto', mt: 4 }}>
+      <Box sx={{ flexGrow: 1, p: 3 }}>
         <Typography variant="h4" gutterBottom>
           Dashboard
         </Typography>
-        {userId && (
-          <Typography>
-            ยินดีต้อนรับ! User ID ของคุณคือ: {userId}
-          </Typography>
-        )}
+        <Grid container spacing={3}>
+          {vehicles.map((vehicle) => (
+            <Grid item  xs={matches} key={vehicle.id || vehicle._id}>
+              <VehicleCard vehicle={vehicle} />
+            </Grid>
+          ))}
+        </Grid>
       </Box>
     </Layout>
   );
