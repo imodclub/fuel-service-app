@@ -33,11 +33,6 @@ export default function VehicleCard({ vehicle, onDelete, onRefill, refillHistory
           {expanded ? 'ซ่อนประวัติ' : 'แสดงประวัติ'}
         </Button>
       </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
-        <CardContent>
-          <FuelRefillHistory refillHistory={refillHistory} />
-        </CardContent>
-      </Collapse>
     </Card>
   );
 }

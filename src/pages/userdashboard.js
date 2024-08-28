@@ -16,7 +16,6 @@ import {
 } from '@mui/material';
 import VehicleCard from '../components/VehicleCard';
 import FuelRefillForm from '@/components/FuelRefillForm';
-import FuelRefillHistory from '@/components/FuelRefillHistory';
 
 export default function UserDashboard() {
   const [vehicles, setVehicles] = useState([]);
@@ -24,7 +23,6 @@ export default function UserDashboard() {
   const [vehicleToDelete, setVehicleToDelete] = useState(null);
   const [openRefillForm, setOpenRefillForm] = useState(false);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
-  const [RefillHistories, setRefillHistories] = useState([]);
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -91,7 +89,7 @@ export default function UserDashboard() {
       const response = await fetch(`/api/fuelRefills?vehicleId=${vehicleId}`);
       if (response.ok) {
         const data = await response.json();
-        setRefillHistories(prev => ({ ...prev, [vehicleId]: data }));
+        setRefillHistories((prev) => ({ ...prev, [vehicleId]: data }));
       }
     } catch (error) {
       console.error('Error fetching refill history:', error);
@@ -108,7 +106,7 @@ export default function UserDashboard() {
           </Typography>
           <Grid container spacing={3}>
             {vehicles.map((vehicle) => (
-              <Grid item xs={12} sm={6} md={6} key={vehicle._id}>
+              <Grid item xs={14} sm={8} md={8} key={vehicle._id}>
                 <VehicleCard
                   vehicle={vehicle}
                   onDelete={() => handleDeleteClick(vehicle._id)}
@@ -127,10 +125,7 @@ export default function UserDashboard() {
         vehicleId={selectedVehicleId}
         onSave={handleRefillSave}
       />
-        <FuelRefillHistory 
-                vehicleId={vehicle._id}
-                refillHistory={refillHistories[vehicle._id] || []}
-              />
+
       <Dialog
         open={openDeleteDialog}
         onClose={handleDeleteCancel}
