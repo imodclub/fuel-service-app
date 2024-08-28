@@ -21,7 +21,7 @@ export default function FuelRefillForm({ open, onClose, vehicleId, onSave }) {
     };
 
     try {
-      const response = await fetch('/api/fuelRefills', {
+      const response = await fetch('/api/fuelrefills', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(refillData),

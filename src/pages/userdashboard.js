@@ -1,25 +1,33 @@
 import { useState, useEffect } from 'react';
 import Layout from '../components/Layout';
-import { Typography, Grid, Box, useMediaQuery, useTheme,Dialog, 
-  DialogActions, 
-  DialogContent, 
-  DialogContentText, 
-  DialogTitle, 
-  Button  } from '@mui/material';
+import {
+  Typography,
+  Grid,
+  Box,
+  useMediaQuery,
+  useTheme,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+  Container,
+} from '@mui/material';
 import VehicleCard from '../components/VehicleCard';
 import FuelRefillForm from '@/components/FuelRefillForm';
+import FuelRefillHistory from '@/components/FuelRefillHistory';
 
 export default function UserDashboard() {
   const [vehicles, setVehicles] = useState([]);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-const [vehicleToDelete, setVehicleToDelete] = useState(null);
-const [openRefillForm, setOpenRefillForm] = useState(false);
+  const [vehicleToDelete, setVehicleToDelete] = useState(null);
+  const [openRefillForm, setOpenRefillForm] = useState(false);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
+  const [RefillHistories, setRefillHistories] = useState([]);
 
   const theme = useTheme();
-  const isExtraSmall = useMediaQuery(theme.breakpoints.down('sm'));
-  const isSmall = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-  const isMedium = useMediaQuery(theme.breakpoints.between('md', 'lg'));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   useEffect(() => {
     fetchVehicles();
@@ -42,7 +50,7 @@ const [openRefillForm, setOpenRefillForm] = useState(false);
     setVehicleToDelete(vehicleId);
     setOpenDeleteDialog(true);
   };
-  
+
   const handleDeleteConfirm = async () => {
     if (vehicleToDelete) {
       try {
@@ -61,7 +69,7 @@ const [openRefillForm, setOpenRefillForm] = useState(false);
       }
     }
   };
-  
+
   const handleDeleteCancel = () => {
     setOpenDeleteDialog(false);
     setVehicleToDelete(null);
@@ -73,58 +81,75 @@ const [openRefillForm, setOpenRefillForm] = useState(false);
   };
 
   const handleRefillSave = (newRefillData) => {
-    // อัปเดต state หรือ refetch ข้อมูลรถหากจำเป็น
     console.log('New refill data:', newRefillData);
-    fetchVehicles(); // หรือปรับปรุง state ตามความเหมาะสม
+    fetchVehicles();
+    fetchRefillHistory(selectedVehicleId);
   };
 
-  
-const matches = useMediaQuery('(min-width:600px)');
-  
+  const fetchRefillHistory = async (vehicleId) => {
+    try {
+      const response = await fetch(`/api/fuelRefills?vehicleId=${vehicleId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setRefillHistories(prev => ({ ...prev, [vehicleId]: data }));
+      }
+    } catch (error) {
+      console.error('Error fetching refill history:', error);
+    }
+  };
+
 
   return (
     <Layout>
-      <Box sx={{ flexGrow: 1, p: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          Dashboard
-        </Typography>
-        <Grid container spacing={3}>
-          {vehicles.map((vehicle) => (
-            <Grid item  xs={matches} sx={{width : '100'}} key={vehicle.id || vehicle._id}>
-              <VehicleCard 
-              vehicle={vehicle} 
-              onDelete={() => handleDeleteClick(vehicle._id)}
-              onRefill={() => handleRefillClick(vehicle._id)}
-            />
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
+      <Container maxWidth="lg">
+        <Box sx={{ flexGrow: 1, py: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4 }}>
+            Dashboard
+          </Typography>
+          <Grid container spacing={3}>
+            {vehicles.map((vehicle) => (
+              <Grid item xs={12} sm={6} md={6} key={vehicle._id}>
+                <VehicleCard
+                  vehicle={vehicle}
+                  onDelete={() => handleDeleteClick(vehicle._id)}
+                  onRefill={() => handleRefillClick(vehicle._id)}
+                />
+                
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      </Container>
+
       <FuelRefillForm
         open={openRefillForm}
         onClose={() => setOpenRefillForm(false)}
         vehicleId={selectedVehicleId}
         onSave={handleRefillSave}
       />
+        <FuelRefillHistory 
+                vehicleId={vehicle._id}
+                refillHistory={refillHistories[vehicle._id] || []}
+              />
       <Dialog
-      open={openDeleteDialog}
-      onClose={handleDeleteCancel}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      <DialogTitle id="alert-dialog-title">{"ยืนยันการลบข้อมูลรถ"}</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          ข้อมูลรถทั้งหมดจะถูกลบ คุณแน่ใจหรือไม่ที่จะดำเนินการต่อ?
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleDeleteCancel}>ยกเลิก</Button>
-        <Button onClick={handleDeleteConfirm} autoFocus>
-          ยืนยันการลบ
-        </Button>
-      </DialogActions>
-    </Dialog>
+        open={openDeleteDialog}
+        onClose={handleDeleteCancel}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">ยืนยันการลบข้อมูลรถ</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            ข้อมูลรถทั้งหมดจะถูกลบ คุณแน่ใจหรือไม่ที่จะดำเนินการต่อ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel}>ยกเลิก</Button>
+          <Button onClick={handleDeleteConfirm} color="error" autoFocus>
+            ยืนยันการลบ
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Layout>
   );
 }
