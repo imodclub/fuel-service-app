@@ -7,7 +7,7 @@ const bottomMenuItems = [
   { text: 'โปรไฟล์', href: 'profile'},
   { text: 'เกี่ยวกับเรา', href: '/about' },
   { text: 'ติดต่อ', href: '/contact' },
-  { text: 'ช่วยเหลือ', href: '/help' },
+  { text: 'ออกจากระบบ', href: '/logout' },
 ];
 
 const bottomDrawerStyle = {

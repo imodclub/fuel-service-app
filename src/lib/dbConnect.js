@@ -22,8 +22,7 @@ async function dbConnect() {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+      
     };
 
     console.log('Connecting to MongoDB...') // เพิ่ม logging

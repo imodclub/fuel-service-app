@@ -14,7 +14,6 @@ const VehicleSchema = new mongoose.Schema({
   vehicleType: {
     type: String,
     required: [true, 'กรุณาระบุประเภทรถ'],
-    enum: ['รถยนต์', 'จักรยานยนต์'],
   },
   brand: {
     type: String,

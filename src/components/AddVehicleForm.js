@@ -14,8 +14,10 @@ import {
   Snackbar,
 } from '@mui/material';
 import VehicleCard from './VehicleCard';
+import { Router, useRouter } from 'next/router';
 
 export default function AddVehicleForm({ open, onClose, userId }) {
+  const router = useRouter;
   const [formData, setFormData] = useState({
     licensePlate: '',
     vehicleType: '',
@@ -51,6 +53,9 @@ export default function AddVehicleForm({ open, onClose, userId }) {
           model: '',
           engineCC: '',
         });
+        onClose();
+        window.location.href="/userdashboard"
+        
       }
     } catch (error) {
       console.error('Error adding vehicle:', error);
@@ -80,8 +85,8 @@ export default function AddVehicleForm({ open, onClose, userId }) {
               value={formData.vehicleType}
               onChange={handleChange}
             >
-              <MenuItem value="car">รถยนต์</MenuItem>
-              <MenuItem value="motorcycle">จักรยานยนต์</MenuItem>
+              <MenuItem value="รถยนต์">รถยนต์</MenuItem>
+              <MenuItem value="รถจักรยานยนต์">จักรยานยนต์</MenuItem>
             </Select>
           </FormControl>
           <TextField

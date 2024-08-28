@@ -30,16 +30,8 @@ export default function Layout({ children }) {
     setUserId(storedUserId);
   }, []);
 
-  const handleLogout = async () => {
-    localStorage.removeItem('userId');
-    setUserId(null);
-    document.cookie = 'token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    try {
-      await fetch('/api/logout', { method: 'POST' });
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-    router.push('/');
+  const handleLogout = () => {
+    router.push('/logout');
   };
 
   return (
@@ -72,14 +64,11 @@ export default function Layout({ children }) {
                 <ListItemText primary="Dashboard" />
               </ListItem>
               <ListItem>
-                <Button onClick={handleLogout} color="secondary">
-                  ออกจากระบบ
-                </Button>
-              </ListItem>
               <Button onClick={() => setOpenAddVehicle(true)}>
                 เพิ่มข้อมูลรถ
               </Button>
-              <Button onClick={handleLogout}>ออกจากระบบ</Button>
+              </ListItem>
+              
             </>
           )}
         </List>
