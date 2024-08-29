@@ -19,10 +19,10 @@ const bottomDrawerStyle = {
   },
 };
 
-
 export default function Layout({ children }) {
   const [userId, setUserId] = useState(null);
   const [openAddVehicle, setOpenAddVehicle] = useState(false);
+  const [vehicleSubMenuOpen, setVehicleSubMenuOpen] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -32,6 +32,10 @@ export default function Layout({ children }) {
 
   const handleLogout = () => {
     router.push('/logout');
+  };
+
+  const toggleVehicleSubMenu = () => {
+    setVehicleSubMenuOpen(!vehicleSubMenuOpen);
   };
 
   return (
@@ -64,11 +68,28 @@ export default function Layout({ children }) {
                 <ListItemText primary="Dashboard" />
               </ListItem>
               <ListItem>
-              <Button onClick={() => setOpenAddVehicle(true)}>
-                เพิ่มข้อมูลรถ
-              </Button>
+                <Button onClick={toggleVehicleSubMenu}>
+                  ข้อมูลรถ
+                </Button>
               </ListItem>
-              
+              {vehicleSubMenuOpen && (
+                <>
+                  <ListItem button component={Link} href='/vehicle-info' sx={{ pl: 4 }}>
+                    <ListItemText primary="ข้อมูลทั่วไป" />
+                  </ListItem>
+                  <ListItem button component={Link} href='/fuel-info' sx={{ pl: 4 }}>
+                    <ListItemText primary="ข้อมูลการเติมน้ำมัน" />
+                  </ListItem>
+                  <ListItem button component={Link} href='/maintenance-info' sx={{ pl: 4 }}>
+                    <ListItemText primary="ข้อมูลการบำรุงรักษา" />
+                  </ListItem>
+                </>
+              )}
+              <ListItem>
+                <Button onClick={() => setOpenAddVehicle(true)}>
+                  เพิ่มข้อมูลรถ
+                </Button>
+              </ListItem>
             </>
           )}
         </List>

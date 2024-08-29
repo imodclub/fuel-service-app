@@ -84,17 +84,7 @@ export default function UserDashboard() {
     fetchRefillHistory(selectedVehicleId);
   };
 
-  const fetchRefillHistory = async (vehicleId) => {
-    try {
-      const response = await fetch(`/api/fuelRefills?vehicleId=${vehicleId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setRefillHistories((prev) => ({ ...prev, [vehicleId]: data }));
-      }
-    } catch (error) {
-      console.error('Error fetching refill history:', error);
-    }
-  };
+
 
 
   return (

@@ -28,7 +28,7 @@ export default function Logout() {
     };
 
     performLogout();
-  }, []);
+  }, [router]);
 
   return <div>Logging out...</div>;
 }

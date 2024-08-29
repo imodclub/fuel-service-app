@@ -54,8 +54,17 @@ export default function FuelRefillForm({ open, onClose, vehicleId, onSave }) {
                 <DatePicker
                   label="วันที่เติมน้ำมัน"
                   value={refillDate}
-                  onChange={(newValue) => setRefillDate(newValue)}
+                  onChange={(newValue) => {
+                    // ตรวจสอบว่า newValue ไม่เป็น null ก่อนที่จะกำหนดค่า
+                    if (newValue) {
+                      // ตั้งเวลาเป็น 00:00:00 เพื่อหลีกเลี่ยงปัญหาเรื่อง timezone
+                      const dateWithoutTime = new Date(newValue.setHours(0, 0, 0, 0));
+                      setRefillDate(dateWithoutTime);
+                    }
+                  }}
                   renderInput={(params) => <TextField {...params} fullWidth margin="normal" />}
+                // เพิ่มตัวเลือกเพื่อให้แสดงปฏิทินแบบไทย (ถ้าต้องการ)
+                // locale={thLocale}
                 />
               </LocalizationProvider>
               <TextField

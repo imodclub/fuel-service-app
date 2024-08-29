@@ -30,7 +30,6 @@ export default function VehicleCard({ vehicle, onDelete, onRefill, refillHistory
           aria-expanded={expanded}
           aria-label="show history"
         >
-          {expanded ? 'ซ่อนประวัติ' : 'แสดงประวัติ'}
         </Button>
       </CardActions>
     </Card>
