@@ -78,13 +78,28 @@ export default function UserDashboard() {
     setOpenRefillForm(true);
   };
 
-  const handleRefillSave = (newRefillData) => {
+  const handleRefillSave = async (newRefillData) => {
+    // อัปเดต state หรือ refetch ข้อมูลรถหากจำเป็น
     console.log('New refill data:', newRefillData);
-    fetchVehicles();
-    fetchRefillHistory(selectedVehicleId);
+    await fetchVehicles(); // หรือปรับปรุง state ตามความเหมาะสม
+    if (newRefillData.vehicleId) {
+      await fetchRefillHistory(newRefillData.vehicleId);
+    }
   };
 
-
+  const fetchRefillHistory = async (vehicleId) => {
+    try {
+      const response = await fetch(`/api/fuelrefills?vehicleId=${vehicleId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setRefillHistories(prev => ({ ...prev, [vehicleId]: data }));
+      } else {
+        console.error('Failed to fetch refill history');
+      }
+    } catch (error) {
+      console.error('Error fetching refill history:', error);
+    }
+  };
 
 
   return (

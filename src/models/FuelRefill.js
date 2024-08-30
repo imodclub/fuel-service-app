@@ -12,7 +12,6 @@ const FuelRefillSchema = new mongoose.Schema({
   },
   amount: {
     type: Number,
-    required: true
   },
   pricePerLiter: {
     type: Number,
@@ -24,7 +23,6 @@ const FuelRefillSchema = new mongoose.Schema({
   },
   mileage: {
     type: Number,
-    required: true
   },
   createdAt: {
     type: Date,
