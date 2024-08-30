@@ -21,6 +21,7 @@ export default async function handler(req, res) {
         const fuelRefill = await FuelRefill.create(req.body);
         res.status(201).json({ success: true, data: fuelRefill });
       } catch (error) {
+        console.log('error 400 ', req);
         res.status(400).json({ success: false });
       }
       break;
