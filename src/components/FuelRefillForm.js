@@ -63,6 +63,7 @@ export default function FuelRefillForm({ open, onClose, vehicleId, onSave }) {
       mileage: parseFloat(parseNumber(mileage))
     };
 
+
     try {
       const response = await fetch('/api/fuelrefills', {
         method: 'POST',
