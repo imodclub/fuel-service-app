@@ -1,5 +1,14 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+} from '@mui/material';
 
 const FuelRefillTable = ({ fuelRecords = [] }) => {
   const records = Array.isArray(fuelRecords) ? fuelRecords : [];
@@ -11,9 +20,12 @@ const FuelRefillTable = ({ fuelRecords = [] }) => {
     return 0;
   };
 
-  const totalAmount = records.reduce((sum, record) => 
-    sum + calculateAmount(record.totalPrice, record.pricePerLiter), 0);
-  const totalPrice = records.reduce((sum, record) => sum + (record.totalPrice || 0), 0);
+  const calculateMileageDifference = (currentIndex) => {
+    if (currentIndex === 0) return 0; // ไม่มีการเติมครั้งก่อน
+    const currentMileage = records[currentIndex].mileage;
+    const previousMileage = records[currentIndex - 1].mileage;
+    return currentMileage - previousMileage;
+  };
 
   if (records.length === 0) {
     return <Typography>ไม่มีข้อมูลการเติมน้ำมัน</Typography>;
@@ -25,28 +37,31 @@ const FuelRefillTable = ({ fuelRecords = [] }) => {
         <TableHead>
           <TableRow>
             <TableCell>วันที่เติมน้ำมัน</TableCell>
-            <TableCell align="right">จำนวนลิตร</TableCell>
-            <TableCell align="right">ราคาต่อลิตร (บาท)</TableCell>
-            <TableCell align="right">ราคารวม (บาท)</TableCell>
+            <TableCell>จำนวนลิตร</TableCell>
+            <TableCell>ราคาต่อลิตร (บาท)</TableCell>
+            <TableCell>ราคารวม (บาท)</TableCell>
+            <TableCell>ระยะทาง/กิโลเมตร</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {records.map((record) => (
+          {records.map((record, index) => (
             <TableRow key={record._id}>
-              <TableCell>{new Date(record.refillDate).toLocaleDateString('th-TH')}</TableCell>
-              <TableCell align="right">
-                {calculateAmount(record.totalPrice, record.pricePerLiter).toFixed(2)}
+              <TableCell>
+                {new Date(record.refillDate).toLocaleDateString('th-TH')}
               </TableCell>
-              <TableCell align="right">{record.pricePerLiter?.toFixed(2) || '0.00'}</TableCell>
-              <TableCell align="right">{record.totalPrice?.toFixed(2) || '0.00'}</TableCell>
+              <TableCell>
+                {calculateAmount(
+                  record.totalPrice,
+                  record.pricePerLiter
+                ).toFixed(2)}
+              </TableCell>
+              <TableCell>
+                {record.pricePerLiter?.toFixed(2) || '0.00'}
+              </TableCell>
+              <TableCell>{record.totalPrice?.toFixed(2) || '0.00'}</TableCell>
+              <TableCell>{calculateMileageDifference(index)}</TableCell>
             </TableRow>
           ))}
-          <TableRow>
-            <TableCell colSpan={1} align="right"><strong>รวม</strong></TableCell>
-            <TableCell align="right"><strong>{totalAmount.toFixed(2)}</strong></TableCell>
-            <TableCell align="right">-</TableCell>
-            <TableCell align="right"><strong>{totalPrice.toFixed(2)}</strong></TableCell>
-          </TableRow>
         </TableBody>
       </Table>
     </TableContainer>
