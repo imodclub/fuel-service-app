@@ -3,6 +3,7 @@ import FuelRefill from '../../models/FuelRefill';
 
 export default async function handler(req, res) {
   const { method } = req;
+  const { vehicleId } = req.query;
 
   await dbConnect();
 
@@ -11,9 +12,13 @@ export default async function handler(req, res) {
       try {
         const { vehicleId } = req.query;
         if (!vehicleId) {
-          return res.status(400).json({ success: false, error: 'Vehicle ID is required' });
+          return res
+            .status(400)
+            .json({ success: false, error: 'Vehicle ID is required' });
         }
-        const fuelRefills = await FuelRefill.find({ vehicleId }).sort({ refillDate: -1 });
+        const fuelRefills = await FuelRefill.find({ vehicleId }).sort({
+          refillDate: -1,
+        });
         res.status(200).json({ success: true, data: fuelRefills });
       } catch (error) {
         res.status(400).json({ success: false, error: error.message });
@@ -22,11 +27,14 @@ export default async function handler(req, res) {
 
     case 'POST':
       try {
-        const { vehicleId, refillDate, totalPrice, pricePerLiter, mileage } = req.body;
+        const { vehicleId, refillDate, totalPrice, pricePerLiter, mileage } =
+          req.body;
 
         // ตรวจสอบข้อมูลที่จำเป็น
         if (!vehicleId || !refillDate || !totalPrice || !pricePerLiter) {
-          return res.status(400).json({ success: false, error: 'Missing required fields' });
+          return res
+            .status(400)
+            .json({ success: false, error: 'Missing required fields' });
         }
 
         // สร้างข้อมูลการเติมน้ำมันใหม่
@@ -36,11 +44,31 @@ export default async function handler(req, res) {
           totalPrice: parseFloat(totalPrice),
           pricePerLiter: parseFloat(pricePerLiter),
           mileage: mileage ? parseFloat(mileage) : null,
-          amount: totalPrice / pricePerLiter // คำนวณจำนวนลิตร
+          amount: totalPrice / pricePerLiter, // คำนวณจำนวนลิตร
         });
 
         await newFuelRefill.save();
         res.status(201).json({ success: true, data: newFuelRefill });
+      } catch (error) {
+        res.status(400).json({ success: false, error: error.message });
+      }
+      break;
+
+    case 'DELETE':
+      try {
+        if (!vehicleId) {
+          return res
+            .status(400)
+            .json({ success: false, error: 'Vehicle ID is required' });
+        }
+
+        await FuelRefill.deleteMany({ vehicleId });
+        res
+          .status(200)
+          .json({
+            success: true,
+            message: 'Fuel refill data reset successfully',
+          });
       } catch (error) {
         res.status(400).json({ success: false, error: error.message });
       }

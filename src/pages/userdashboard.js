@@ -107,7 +107,7 @@ export default function UserDashboard() {
       <Container maxWidth="lg">
         <Box sx={{ flexGrow: 1, py: 4 }}>
           <Typography variant="h4" component="h1" gutterBottom sx={{ mb: 4 }}>
-            Dashboard
+            บันทึกข้อมูล
           </Typography>
           <Grid container spacing={3}>
             {vehicles.map((vehicle) => (

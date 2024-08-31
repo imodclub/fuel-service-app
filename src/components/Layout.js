@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import BottomSidebar from './BottomSidebar';
 import AddVehicleForm from './AddVehicleForm';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 const drawerWidth = 240;
 
@@ -65,23 +67,44 @@ export default function Layout({ children }) {
           ) : (
             <>
               <ListItem button component={Link} href="/userdashboard">
-                <ListItemText primary="Dashboard" />
+                <ListItemText primary="บันทึกข้อมูล" />
               </ListItem>
               <ListItem>
-                <Button onClick={toggleVehicleSubMenu}>
-                  ข้อมูลรถ
-                </Button>
+                <Button onClick={toggleVehicleSubMenu}>ข้อมูลรถ</Button>
               </ListItem>
               {vehicleSubMenuOpen && (
                 <>
-                  <ListItem button component={Link} href='/vehicle-info' sx={{ pl: 4 }}>
+                  <ListItem
+                    button
+                    component={Link}
+                    href="/vehicle-info"
+                    sx={{ pl: 4 }}
+                  >
                     <ListItemText primary="ข้อมูลทั่วไป" />
                   </ListItem>
-                  <ListItem button component={Link} href='/fuel-info' sx={{ pl: 4 }}>
+                  <ListItem
+                    button
+                    component={Link}
+                    href="/fuel-info"
+                    sx={{ pl: 4 }}
+                  >
                     <ListItemText primary="ข้อมูลการเติมน้ำมัน" />
                   </ListItem>
-                  <ListItem button component={Link} href='/maintenance-info' sx={{ pl: 4 }}>
+                  <ListItem
+                    button
+                    component={Link}
+                    href="/maintenance-info"
+                    sx={{ pl: 4 }}
+                  >
                     <ListItemText primary="ข้อมูลการบำรุงรักษา" />
+                  </ListItem>
+                  <ListItem
+                    button
+                    component={Link}
+                    href="/edit-reset-info"
+                    sx={{ pl: 4 }}
+                  >
+                    <ListItemText primary="แก้ไขและรีเซ็ตข้อมูล" />
                   </ListItem>
                 </>
               )}
