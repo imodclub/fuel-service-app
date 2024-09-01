@@ -16,15 +16,7 @@ const MaintenanceSchema = new mongoose.Schema({
   serviceDate: {
     type: Date,
   },
-  oilChange: {
-    amount: Number,
-    details: String,
-  },
-  oilFilter: {
-    amount: Number,
-    details: String,
-  },
-  additionalItems: [
+  serviceItems: [
     {
       item: String,
       amount: Number,

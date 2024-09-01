@@ -50,9 +50,7 @@ export default function MaintenanceForm({
   const [mileageError, setMileageError] = useState('');
   const [location, setLocation] = useState('');
   const [serviceDate, setServiceDate] = useState(new Date());
-  const [oilChange, setOilChange] = useState({ amount: '', details: '' });
-  const [oilFilter, setOilFilter] = useState({ amount: '', details: '' });
-  const [additionalItems, setAdditionalItems] = useState([]);
+  const [serviceItems, setServiceItems] = useState([]);
   const [newItem, setNewItem] = useState({ item: '', amount: '', details: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [alert, setAlert] = useState({
@@ -88,7 +86,7 @@ export default function MaintenanceForm({
       });
       return;
     }
-    if (additionalItems.length === 0) {
+    if (serviceItems.length === 0) {
       setShowNoItemsDialog(true);
       return;
     }
@@ -99,9 +97,7 @@ export default function MaintenanceForm({
       mileage: parseNumber(mileage),
       location,
       serviceDate,
-      oilChange,
-      oilFilter,
-      additionalItems,
+      serviceItems,
       createdAt: new Date(),
     };
 
@@ -140,14 +136,14 @@ export default function MaintenanceForm({
 
   const addItem = () => {
     if (newItem.item && newItem.amount) {
-      setAdditionalItems([...additionalItems, newItem]);
+      setServiceItems([...serviceItems, newItem]);
       setNewItem({ item: '', amount: '', details: '' });
     }
   };
 
   const removeItem = (index) => {
-    const newItems = additionalItems.filter((_, i) => i !== index);
-    setAdditionalItems(newItems);
+    const newItems = serviceItems.filter((_, i) => i !== index);
+    setServiceItems(newItems);
   };
 
   return (
@@ -199,63 +195,10 @@ export default function MaintenanceForm({
                 />
               </LocalizationProvider>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="น้ำมันเครื่อง (บาท)"
-                value={formatNumber(oilChange.amount)}
-                onChange={(e) =>
-                  setOilChange({
-                    ...oilChange,
-                    amount: parseNumber(e.target.value),
-                  })
-                }
-                InputProps={{
-                  startAdornment: '฿',
-                  inputProps: { inputMode: 'numeric', pattern: '[0-9,]*' },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="รายละเอียดน้ำมันเครื่อง"
-                value={oilChange.details}
-                onChange={(e) =>
-                  setOilChange({ ...oilChange, details: e.target.value })
-                }
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="กรองน้ำมันเครื่อง (บาท)"
-                value={formatNumber(oilFilter.amount)}
-                onChange={(e) =>
-                  setOilFilter({
-                    ...oilFilter,
-                    amount: parseNumber(e.target.value),
-                  })
-                }
-                InputProps={{
-                  startAdornment: '฿',
-                  inputProps: { inputMode: 'numeric', pattern: '[0-9,]*' },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="รายละเอียดกรองน้ำมันเครื่อง"
-                value={oilFilter.details}
-                onChange={(e) =>
-                  setOilFilter({ ...oilFilter, details: e.target.value })
-                }
-              />
-            </Grid>
+            
           </Grid>
           <Box mt={2}>
-            <Typography variant="subtitle1">รายการเพิ่มเติม</Typography>
+            <Typography variant="subtitle1">บันทึกรายการ</Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={4}>
                 <TextField
@@ -302,7 +245,7 @@ export default function MaintenanceForm({
             </Box>
           </Box>
           <List>
-            {additionalItems.map((item, index) => (
+            {serviceItems.map((item, index) => (
               <ListItem key={index}>
                 <ListItemText
                   primary={item.item}

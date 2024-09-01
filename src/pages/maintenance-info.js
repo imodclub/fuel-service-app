@@ -7,6 +7,7 @@ import {
   Collapse,
   Box,
   Grid,
+  Paper,
 } from '@mui/material';
 import Layout from '../components/Layout';
 import MaintenanceTable from '../components/MaintenanceTable';
@@ -15,6 +16,7 @@ const MaintenanceInfo = () => {
   const [vehicles, setVehicles] = useState([]);
   const [maintenanceRecords, setMaintenanceRecords] = useState({});
   const [expanded, setExpanded] = useState({});
+  const [selectedRecord, setSelectedRecord] = useState(null);
 
   useEffect(() => {
     fetchVehicles();
@@ -60,6 +62,10 @@ const MaintenanceInfo = () => {
     setExpanded((prev) => ({ ...prev, [vehicleId]: !prev[vehicleId] }));
   };
 
+  const handleViewDetails = (record) => {
+    setSelectedRecord(record);
+  };
+
   return (
     <Layout>
       <Box sx={{ maxWidth: 800, margin: 'auto', mt: 4 }}>
@@ -90,6 +96,7 @@ const MaintenanceInfo = () => {
                   >
                     <MaintenanceTable
                       maintenanceRecords={maintenanceRecords[vehicle._id] || []}
+                      onViewDetails={handleViewDetails}
                     />
                   </Collapse>
                 </CardContent>
@@ -97,6 +104,28 @@ const MaintenanceInfo = () => {
             </Grid>
           ))}
         </Grid>
+        {selectedRecord && (
+          <Paper sx={{ p: 3, mt: 4 }}>
+            <Typography variant="h6" gutterBottom>
+              รายละเอียดการบำรุงรักษา
+            </Typography>
+            <Typography>
+              วันที่ :{' '}
+              {new Date(selectedRecord.serviceDate).toLocaleDateString('th-TH')}
+            </Typography>
+            <Typography>ระยะทาง : {selectedRecord.mileage} กม.</Typography>
+            <Typography>สถานที่ : {selectedRecord.location}</Typography>
+            <Typography>รายการบำรุงรักษา</Typography>
+            <ul>
+              {selectedRecord.serviceItems &&
+                selectedRecord.serviceItems.map((item, index) => (
+                  <li key={index}>
+                    {item.item} : {item.amount} บาท
+                  </li>
+                ))}
+            </ul>
+          </Paper>
+        )}
       </Box>
     </Layout>
   );

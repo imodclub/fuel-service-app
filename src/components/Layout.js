@@ -72,7 +72,6 @@ export default function Layout({ children }) {
               <ListItem>
                 <Button onClick={toggleVehicleSubMenu}>ข้อมูลรถ</Button>
               </ListItem>
-              {vehicleSubMenuOpen && (
                 <>
                   <ListItem
                     button
@@ -107,7 +106,6 @@ export default function Layout({ children }) {
                     <ListItemText primary="แก้ไขและรีเซ็ตข้อมูล" />
                   </ListItem>
                 </>
-              )}
               <ListItem>
                 <Button onClick={() => setOpenAddVehicle(true)}>
                   เพิ่มข้อมูลรถ

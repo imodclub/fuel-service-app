@@ -243,6 +243,12 @@ const FuelInfo = () => {
             </Typography>
           )}
         </Paper>
+        <Paper sx={{ p: 3, mt: 4 }}>
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            ผลการคำนวณเป็นเพียงการประมาณการคร่าวๆเท่านั้น
+            ไม่สามารถอ้างอิงจากเครื่องยนต์โดยตรงได้
+          </Typography>
+        </Paper>
       </Box>
     </Layout>
   );
