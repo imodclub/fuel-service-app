@@ -119,6 +119,7 @@ const fetchMaintenanceRecords = async (vehicleId) => {
           body: JSON.stringify(editingFuelRecord),
         }
       );
+
       if (response.ok) {
         setEditingFuelRecord(null);
         await fetchFuelRecords(selectedVehicleId);
